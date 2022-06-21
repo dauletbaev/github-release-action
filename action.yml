@@ -9,11 +9,22 @@ inputs:
   title:
     description: "The name of the release to publish"
     required: true
+  pre:
+    description: "Prerelease"
+    required: false
+    default: '0'
 
 runs:
   using: 'composite'
   steps:      
-    - run: $GITHUB_ACTION_PATH/entrypoint.sh
+    - if: inputs.pre == '0'
+      run: $GITHUB_ACTION_PATH/entrypoint.sh
+      shell: bash
+      env:
+        INPUT_TITLE: ${{ inputs.title }}
+    
+    - if: inputs.pre == '1'
+      run: $GITHUB_ACTION_PATH/prerelease.sh
       shell: bash
       env:
         INPUT_TITLE: ${{ inputs.title }}
